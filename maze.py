@@ -30,15 +30,15 @@ def maze_solver(maze):
         (x, y), path = que.popleft()
         visited.add((x, y))
 
-        for direction, wall_bit in zip(['N', 'W', 'S', 'E'], [8, 4, 2, 1]):
+        for direction, wall_bit in zip(['N', 'W', 'S', 'E'], [8, 4, 2, 1]): 
             nx, ny = move(x, y, direction)
             if (
                     0 <= nx < len(maze) and
                     0 <= ny < len(maze[0]) and
                     isinstance(maze[nx][ny], int) and
                     (nx, ny) not in visited
-            ):
-                if (maze[nx][ny] & wall_bit) == 0:
+            ):  #Checking for walls using binary codes
+                if (maze[nx][ny] & wall_bit) == 0: 
                     new_path = path + direction
                     que.append(((nx, ny), new_path))
                     visited.add((nx, ny))
