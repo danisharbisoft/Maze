@@ -21,6 +21,7 @@ def maze_solver(maze):
         for q in range(len(maze[0])):
             if maze[p][q] == 'X':
                 end = (p, q)
+                print(end)
                 break
     # If the user gives no starting position the program ends here
     if end is None:
@@ -45,18 +46,18 @@ def maze_solver(maze):
             nx, ny = move(x, y, direction)
             if (nx, ny) == end:  # Terminating the function once 'X' is reached.
                 reached_goal = True
+                result = path + direction # Getting the shortest available path
                 break
             elif (  # Calculating available directions
+                    (nx, ny) not in visited and
                     0 <= nx < len(maze) and
-                    0 <= ny < len(maze[0]) and
-                    (nx, ny) not in visited
+                    0 <= ny < len(maze[0])
 
             ):  # Making a check for walls using Binary data
                 if (maze[nx][ny] & wall_bit) == 0:
                     new_path = path + direction
                     queue.append(((nx, ny), new_path))
                     visited.add((nx, ny))
-                    result = new_path  # Getting the shortest available path
 
     if reached_goal:
         return list(result)
@@ -66,9 +67,9 @@ def maze_solver(maze):
 
 # An example set
 example = (
-    ('B', 2, 3, 4),
-    (5, 6, 7, 8),
-    (9, 10, 11, 12),
+    ('B', 0, 0, 0),
+    (5, 6, 7, 0),
+    (9, 10, 11, 0),
     (13, 14, 14, 'X')
 )
 
