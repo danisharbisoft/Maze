@@ -23,7 +23,6 @@ def maze_solver(maze):
         for q in range(len(maze[0])):
             if maze[p][q] == 'X':
                 end = (p, q)
-                print(end)
                 break
     # If the user gives no starting position the program ends here
     if end is None:
@@ -49,18 +48,12 @@ def maze_solver(maze):
                     new_path = path + direction
                     queue.append(((nx, ny), new_path))
                     visited.add((nx, ny))
+                    maze = update_cell(maze, rotated_cell, nx, ny)
 
     if reached_goal:
         return list(result)
     else:
         return None  # No possible solution
-
-
-def rotate_cell(cell_value):
-    binary_value = bin(cell_value)[2:]
-    rotated_binary = binary_value[-1] + binary_value[:-1]
-    rotated_cell_value = int(rotated_binary, 2)
-    return rotated_cell_value
 
 
 def move(x, y, direction):  # This function moves the ball in the available direction
@@ -73,6 +66,22 @@ def move(x, y, direction):  # This function moves the ball in the available dire
         return x + 1, y
     if direction == 'E':
         return x, y + 1
+
+
+# This function rotates each cell clockwise
+def rotate_cell(cell_value):
+    print(((cell_value << 1) & 0b1111) | (cell_value >> 3))
+    return ((cell_value << 1) & 0b1111) | (cell_value >> 3)
+
+
+# This function updates the values of the maze
+def update_cell(maze, rotated_cell, nx, ny):
+    updated_maze = list(maze)
+    updated_maze[nx] = list(updated_maze[nx])
+    updated_maze[nx][ny] = rotated_cell
+    updated_maze[nx] = tuple(updated_maze[nx])
+    updated_maze = tuple(updated_maze)
+    return updated_maze
 
 
 # An example set
