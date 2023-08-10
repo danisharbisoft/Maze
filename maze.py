@@ -8,6 +8,8 @@ def maze_solver(maze):
     result = None
     end = None
     reached_goal = False
+    directions = ['N', 'W', 'S', 'E']
+    wall_bits = [8, 4, 2, 1]
 
     # Calculating the starting position
     for i in range(len(maze)):
@@ -27,26 +29,14 @@ def maze_solver(maze):
     if end is None:
         return None
 
-    def move(x, y, direction):  # This function moves the ball in the available direction
-
-        if direction == 'N':
-            return x - 1, y
-        if direction == 'W':
-            return x, y - 1
-        if direction == 'S':
-            return x + 1, y
-        if direction == 'E':
-            return x, y + 1
-
     while queue:
         (x, y), path = queue.popleft()  # Getting the co-ordinates of the current position and path travelled
         visited.add((x, y))
-
-        for direction, wall_bit in zip(['N', 'W', 'S', 'E'], [8, 4, 2, 1]):
+        for direction, wall_bit in zip(directions, wall_bits):
             nx, ny = move(x, y, direction)
             if (nx, ny) == end:  # Terminating the function once 'X' is reached.
                 reached_goal = True
-                result = path + direction # Getting the shortest available path
+                result = path + direction  # Getting the shortest available path
                 break
             elif (  # Calculating available directions
                     (nx, ny) not in visited and
@@ -54,7 +44,8 @@ def maze_solver(maze):
                     0 <= ny < len(maze[0])
 
             ):  # Making a check for walls using Binary data
-                if (maze[nx][ny] & wall_bit) == 0:
+                rotated_cell = rotate_cell(maze[nx][ny])
+                if (rotated_cell & wall_bit) == 0:
                     new_path = path + direction
                     queue.append(((nx, ny), new_path))
                     visited.add((nx, ny))
@@ -65,12 +56,31 @@ def maze_solver(maze):
         return None  # No possible solution
 
 
+def rotate_cell(cell_value):
+    binary_value = bin(cell_value)[2:]
+    rotated_binary = binary_value[-1] + binary_value[:-1]
+    rotated_cell_value = int(rotated_binary, 2)
+    return rotated_cell_value
+
+
+def move(x, y, direction):  # This function moves the ball in the available direction
+
+    if direction == 'N':
+        return x - 1, y
+    if direction == 'W':
+        return x, y - 1
+    if direction == 'S':
+        return x + 1, y
+    if direction == 'E':
+        return x, y + 1
+
+
 # An example set
 example = (
-    ('B', 0, 0, 0),
-    (5, 6, 7, 0),
-    (9, 10, 11, 0),
-    (13, 14, 14, 'X')
+    (4, 2, 5, 4),
+    (4, 15, 11, 1),
+    ('B', 9, 6, 8),
+    (12, 7, 7, 'X')
 )
 
 print(maze_solver(example))
