@@ -5,11 +5,13 @@ def maze_solver(maze):
     # Initialising variables
     visited = set()
     queue = deque()
+    iterations = 0
     result = None
     end = None
     reached_goal = False
     directions = ['N', 'W', 'S', 'E']
     wall_bits = [8, 4, 2, 1]
+    final = []
 
     # Calculating the starting position
     for i in range(len(maze)):
@@ -31,6 +33,7 @@ def maze_solver(maze):
     while queue:
         (x, y), path = queue.popleft()  # Getting the co-ordinates of the current position and path travelled
         visited.add((x, y))
+
         for direction, wall_bit in zip(directions, wall_bits):
             nx, ny = move(x, y, direction)
             if (nx, ny) == end:  # Terminating the function once 'X' is reached.
@@ -43,17 +46,27 @@ def maze_solver(maze):
                     0 <= ny < len(maze[0])
 
             ):  # Making a check for walls using Binary data
-                rotated_cell = rotate_cell(maze[nx][ny])
-                if (rotated_cell & wall_bit) == 0:
+
+                if (maze[nx][ny] & wall_bit) == 0:
                     new_path = path + direction
                     queue.append(((nx, ny), new_path))
                     visited.add((nx, ny))
-                    maze = update_cell(maze, rotated_cell, nx, ny)
+                    result = new_path
 
-    if reached_goal:
-        return list(result)
-    else:
-        return None  # No possible solution
+        if reached_goal:
+            return list(result)
+        else:
+            rotated_cell = rotate_cell(maze[nx][ny])
+            maze = update_cell(maze, rotated_cell, nx, ny)
+            queue.append(((nx, ny), new_path))
+
+        iterations += 1
+
+        if iterations > 20:
+            break
+
+    return None
+    # No possible solution
 
 
 def move(x, y, direction):  # This function moves the ball in the available direction
@@ -70,7 +83,6 @@ def move(x, y, direction):  # This function moves the ball in the available dire
 
 # This function rotates each cell clockwise
 def rotate_cell(cell_value):
-    print(((cell_value << 1) & 0b1111) | (cell_value >> 3))
     return ((cell_value << 1) & 0b1111) | (cell_value >> 3)
 
 
