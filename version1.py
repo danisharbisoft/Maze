@@ -60,7 +60,6 @@ def maze_solver(maze):
                         else:
                             new_path = direction
                         queue.append(((nx, ny), new_path))
-                        visited.add((nx, ny))
                         result = new_path
 
         final = update_final(final, result)
