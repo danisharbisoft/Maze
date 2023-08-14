@@ -7,6 +7,7 @@ def maze_solver(maze):
     queue = deque()
     iterations = 0
     result = None
+    new_path = ''
     final = []
     end = None
     reached_goal = False
@@ -55,7 +56,10 @@ def maze_solver(maze):
                             0 <= ny < len(maze[0]) and
                             (maze[nx][ny] & opposite_direction(direction)) == 0
                     ):
-                        new_path = path + direction
+                        if path is not None:
+                            new_path = path + direction
+                        else:
+                            new_path = direction
                         queue.append(((nx, ny), new_path))
                         visited.add((nx, ny))
                         result = new_path
@@ -70,7 +74,6 @@ def maze_solver(maze):
                 for j in range(len(maze[0])):
                     rotated_cell = rotate_cell(maze[i][j])
                     maze = update_cell(maze, rotated_cell, i, j)
-
         queue.append(((x, y), result))
         iterations += 1
 
@@ -134,7 +137,8 @@ def update_final(final, new_entry):
         final.append(new_entry)
         return final
 
-    sum_lengths = sum(len(entry) for entry in final)
+    sum_lengths = sum(len(entry) for entry in final if entry is not None)
+
     updated_entry = ""
 
     for i, char in enumerate(new_entry):
