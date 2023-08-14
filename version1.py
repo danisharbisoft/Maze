@@ -53,7 +53,7 @@ def maze_solver(maze):
                             (nx, ny) not in visited and
                             0 <= nx < len(maze) and
                             0 <= ny < len(maze[0]) and
-                            (maze[nx][ny] & wall_bit) == 0
+                            (maze[nx][ny] & opposite_direction(direction)) == 0
                     ):
                         new_path = path + direction
                         queue.append(((nx, ny), new_path))
@@ -61,6 +61,7 @@ def maze_solver(maze):
                         result = new_path
 
         final = update_final(final, result)
+        print(final)
 
         if reached_goal:
             return list(final)
@@ -77,8 +78,8 @@ def maze_solver(maze):
     # No possible solution
 
 
-def move(x, y, direction):  # This function moves the ball in the available direction
-
+# This function moves the ball in the available direction
+def move(x, y, direction):
     if direction == 'N':
         return x - 1, y
     if direction == 'W':
@@ -87,6 +88,19 @@ def move(x, y, direction):  # This function moves the ball in the available dire
         return x + 1, y
     if direction == 'E':
         return x, y + 1
+
+
+def opposite_direction(direction):
+    if direction == 'N':
+        return 2  # Wall_bit for the south direction
+    elif direction == 'W':
+        return 1  # Wall_bit for the east direction
+    elif direction == 'S':
+        return 8  # Wall_bit for the north direction
+    elif direction == 'E':
+        return 4  # Wall_bit for the west direction
+    else:
+        return 0  # No wall bit
 
 
 # This function rotates each cell clockwise
@@ -104,6 +118,7 @@ def update_cell(maze, rotated_cell, i, j):
     return updated_maze
 
 
+# This function sets the variables to zero
 def variable_positions(maze, a, b):
     updated_maze = list(maze)
     updated_maze[a] = list(updated_maze[a])
@@ -113,7 +128,8 @@ def variable_positions(maze, a, b):
     return updated_maze
 
 
-def update_final(final, new_entry):  # This function returns it in the desired format
+# This function returns it in the desired format
+def update_final(final, new_entry):
     if not final:
         final.append(new_entry)
         return final
@@ -131,10 +147,11 @@ def update_final(final, new_entry):  # This function returns it in the desired f
 
 # An example set
 example = (
-    (4, 2, 5, 4),
-    (4, 15, 11, 1),
-    ('B', 9, 6, 8),
-    (12, 7, 7, 'X')
+    (6, 3, 10, 4, 11),
+    (8, 10, 4, 8, 5),
+    ('B', 14, 11, 3, 'X'),
+    (15, 3, 4, 14, 15),
+    (14, 7, 15, 5, 5)
 )
 
 print(maze_solver(example))
