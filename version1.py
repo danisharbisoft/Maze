@@ -7,7 +7,6 @@ def maze_solver(maze):
     queue = deque()
     iterations = 0
     result = None
-    new_path = ''
     final = []
     end = None
     reached_goal = False
@@ -140,10 +139,10 @@ def update_final(final, new_entry):
     sum_lengths = sum(len(entry) for entry in final if entry is not None)
 
     updated_entry = ""
-
-    for i, char in enumerate(new_entry):
-        if i >= sum_lengths:
-            updated_entry += char
+    if new_entry is not None:
+        for i, char in enumerate(new_entry):
+            if i >= sum_lengths:
+                updated_entry += char
 
     final.append(updated_entry)
     return final
